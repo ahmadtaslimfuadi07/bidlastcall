@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "79748707845",
+    "project_id": "lelang-53c84",
+    "storage_bucket": "lelang-53c84.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:79748707845:android:c884ac03295853cccbce6c",
+        "android_client_info": {
+          "package_name": "com.lastcall.apps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "79748707845-shilb3dni4fsla82m66eeriel7fukfb6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lastcall.apps",
+            "certificate_hash": "ae3c0fa03908162e670ae5e6d0f022f57290ae34"
+          }
+        },
+        {
+          "client_id": "79748707845-vsqk0k1uvmc9q1jcjfr3n3fil7ngog80.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDofoZpOu6kZn_XajfsbzwVzD_RM27sCg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "79748707845-vsqk0k1uvmc9q1jcjfr3n3fil7ngog80.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "79748707845-j9tcbjg2d9muf1m7sgro4dqru1qa8f7t.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.lelangNew"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
