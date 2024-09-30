@@ -2,8 +2,7 @@
 import 'package:eClassify/Ui/screens/widgets/promoted_widget.dart';
 
 import 'package:eClassify/Utils/AppIcon.dart';
-import 'package:eClassify/Utils/Extensions/extensions.dart';
-import 'package:eClassify/Utils/string_extenstion.dart';
+import 'package:eClassify/Utils/Extensions/extensions.dart'; 
 import 'package:eClassify/data/model/item/item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -165,7 +164,7 @@ class ItemHorizontalCard extends StatelessWidget {
                                       Constant.currencySymbol +
                                           // "${Constant.currencySymbol}${UiUtils().numberFormat(amount: item.itemBid!.bidPrice ?? 0)}"
 
-                                          UiUtils().numberFormat(amount: item.itemBid!.bidPrice).formatAmount(
+                                          UiUtils().numberFormat(amount: item.itemBid!.bidPrice ?? item.startbid).formatAmount(
                                                 prefix: true,
                                               ),
                                     ).size(context.font.large).color(context.color.territoryColor).bold(weight: FontWeight.w700),

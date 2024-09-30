@@ -21,6 +21,9 @@ class UserModel {
   String? updatedAt;
   String? sellerUname;
   String? buyerUname;
+  String? provinceid;
+  String? cityid;
+  String? subdistrictid;
 
   UserModel({
     this.address,
@@ -41,6 +44,9 @@ class UserModel {
     this.updatedAt,
     this.sellerUname,
     this.buyerUname,
+    this.provinceid,
+    this.cityid,
+    this.subdistrictid,
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -64,6 +70,9 @@ class UserModel {
     updatedAt = json['updated_at'];
     sellerUname = json['seller_uname'];
     buyerUname = json['buyer_uname'];
+    provinceid = json['provinceid'].toString();
+    cityid = json['cityid'].toString();
+    subdistrictid = json['subdistrictid'].toString();
   }
 
   Map<String, dynamic> toJson() {

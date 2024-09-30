@@ -1,4 +1,5 @@
 import 'package:eClassify/data/model/category_model.dart';
+import 'package:eClassify/data/model/item/item_detail_model.dart';
 
 import '../CustomField/custom_field_model.dart';
 
@@ -11,11 +12,13 @@ class ItemModel {
   int? minbid;
   int? startbid;
   int? curentbid;
+  int? shippingfee;
   String? image;
   dynamic watermarkimage;
   double? _latitude;
   double? _longitude;
   String? address;
+  String? goodscondition;
   String? contact;
   int? totalLikes;
   int? views;
@@ -47,9 +50,12 @@ class ItemModel {
   String? startdt;
   String? enddt;
   String? bidstatus;
+  String? expirePaymentAt;
   int? myBidPrice;
   int? winnerBidPrice;
+  int? closeprice;
   bool? iswinner;
+  ItemPayment? itemPayment;
 
   double? get latitude => _latitude;
 
@@ -95,12 +101,14 @@ class ItemModel {
     this.price,
     this.startbid,
     this.curentbid,
+    this.shippingfee,
     this.minbid,
     this.image,
     this.watermarkimage,
     dynamic latitude,
     dynamic longitude,
     this.address,
+    this.goodscondition,
     this.contact,
     this.type,
     this.status,
@@ -130,10 +138,13 @@ class ItemModel {
     this.startdt,
     this.enddt,
     this.bidstatus,
+    this.expirePaymentAt,
     this.itemBid,
     this.iswinner,
     this.myBidPrice,
     this.winnerBidPrice,
+    this.closeprice,
+    this.itemPayment,
   }) {
     this.latitude = latitude;
     this.longitude = longitude;
@@ -148,11 +159,13 @@ class ItemModel {
     int? startbid,
     int? minbid,
     int? curentbid,
+    int? shippingfee,
     String? image,
     dynamic watermarkimage,
     dynamic latitude,
     dynamic longitude,
     String? address,
+    String? goodscondition,
     String? contact,
     int? totalLikes,
     int? views,
@@ -182,10 +195,13 @@ class ItemModel {
     String? startdt,
     String? enddt,
     String? bidstatus,
+    String? expirePaymentAt,
     ItemBid? itemBid,
     int? myBidPrice,
     int? winnerBidPrice,
+    int? closeprice,
     bool? iswinner,
+    ItemPayment? itemPayment,
   }) {
     return ItemModel(
       id: id ?? this.id,
@@ -195,7 +211,9 @@ class ItemModel {
       description: description ?? this.description,
       price: price ?? this.price,
       minbid: minbid ?? this.minbid,
+      goodscondition: goodscondition ?? this.goodscondition,
       curentbid: curentbid ?? this.curentbid,
+      shippingfee: shippingfee ?? this.shippingfee,
       startbid: startbid ?? this.startbid,
       image: image ?? this.image,
       watermarkimage: watermarkimage ?? this.watermarkimage,
@@ -231,10 +249,13 @@ class ItemModel {
       startdt: startdt ?? this.startdt,
       enddt: enddt ?? this.enddt,
       bidstatus: bidstatus ?? this.bidstatus,
+      expirePaymentAt: expirePaymentAt ?? this.expirePaymentAt,
       itemBid: itemBid ?? this.itemBid,
       myBidPrice: myBidPrice ?? this.myBidPrice,
       winnerBidPrice: winnerBidPrice ?? this.winnerBidPrice,
+      closeprice: closeprice ?? this.closeprice,
       iswinner: iswinner ?? this.iswinner,
+      itemPayment: itemPayment ?? this.itemPayment,
     );
   }
 
@@ -270,9 +291,12 @@ class ItemModel {
 
     itemBid = json['item_bid'] != null ? new ItemBid.fromJson(json['item_bid']) : null;
 
+    goodscondition = json['goodscondition'];
     myBidPrice = json['my_bid_price'];
     winnerBidPrice = json['winner_bid_price'];
+    closeprice = json['closeprice'];
     iswinner = json['iswinner'];
+    shippingfee = json['shippingfee'] ?? 0;
 
     id = json['id'];
     name = json['name'];
@@ -281,7 +305,7 @@ class ItemModel {
     totalLikes = json['total_likes'];
     views = json['clicks'];
     description = json['description'];
-
+    itemPayment = json['item_payment'] != null ? new ItemPayment.fromJson(json['item_payment']) : null;
     image = json['image'];
     watermarkimage = json['watermark_image'];
     latitude = json['latitude'];
@@ -309,6 +333,7 @@ class ItemModel {
     startdt = json['startdt'];
     enddt = json['enddt'];
     bidstatus = json['bidstatus'];
+    expirePaymentAt = json['expire_payment_at'];
     user = json['user'] != null ? User.fromJson(json['user']) : null;
     if (json['gallery_images'] != null) {
       galleryImages = <GalleryImages>[];
@@ -333,8 +358,11 @@ class ItemModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
+    data['expire_payment_at'] = expirePaymentAt;
     data['name'] = name;
+    data['goodscondition'] = goodscondition;
     data['slug'] = slug;
+    data['closeprice'] = closeprice;
     data['description'] = description;
     data['price'] = price;
     data['total_likes'] = totalLikes;
@@ -359,7 +387,9 @@ class ItemModel {
     data['is_already_reported'] = isAlreadyReported;
     data['all_category_ids'] = allCategoryIds;
     data['rejected_reason'] = rejectedReason;
-
+    if (this.itemPayment != null) {
+      data['item_payment'] = this.itemPayment!.toJson();
+    }
     data['city'] = city;
     data['state'] = state;
     data['country'] = country;

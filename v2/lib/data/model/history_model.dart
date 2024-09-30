@@ -1,3 +1,5 @@
+import 'package:eClassify/data/model/item/item_detail_model.dart';
+
 class HistoryModel {
   List<ItemHistoryModel>? all;
   List<ItemHistoryModel>? open;
@@ -81,6 +83,7 @@ class ItemHistoryModel {
   User? user;
   Category? category;
   List<GalleryImages>? galleryImages;
+  ItemPayment? itemPayment;
 
   ItemHistoryModel({
     this.id,
@@ -118,6 +121,7 @@ class ItemHistoryModel {
     this.user,
     this.category,
     this.galleryImages,
+    this.itemPayment,
   });
 
   ItemHistoryModel.fromJson(Map<String, dynamic> json) {
@@ -166,6 +170,7 @@ class ItemHistoryModel {
         galleryImages!.add(new GalleryImages.fromJson(v));
       });
     }
+    itemPayment = json['item_payment'] != null ? new ItemPayment.fromJson(json['item_payment']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -203,6 +208,9 @@ class ItemHistoryModel {
     data['winner_bid_price'] = this.winnerBidPrice;
     data['haswinner'] = this.haswinner;
     data['hasclosed'] = this.hasclosed;
+    if (this.itemPayment != null) {
+      data['item_payment'] = this.itemPayment!.toJson();
+    }
     if (this.user != null) {
       data['user'] = this.user!.toJson();
     }

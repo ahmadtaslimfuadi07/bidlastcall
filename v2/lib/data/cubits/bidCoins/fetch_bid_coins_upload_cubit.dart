@@ -1,9 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:eClassify/data/Repositories/bid_coins.dart';
-import 'package:eClassify/data/model/bid_coins_history_model.dart';
 import 'package:eClassify/exports/main_export.dart';
 import 'package:path/path.dart' as path;
 

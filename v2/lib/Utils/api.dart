@@ -2,11 +2,15 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:dio_http_formatter/dio_http_formatter.dart';
+import 'package:eClassify/Ui/screens/widgets/blurred_dialoge_box.dart';
+import 'package:eClassify/utils/AppIcon.dart';
+import 'package:eClassify/utils/ui_utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:eClassify/Utils/Extensions/extensions.dart';
 import 'package:eClassify/Utils/helper_utils.dart';
 import 'package:eClassify/Utils/network_request_interseptor.dart';
 import 'package:eClassify/data/cubits/chatCubits/get_buyer_chat_users_cubit.dart';
+import 'package:flutter/material.dart';
 
 import '../data/cubits/Report/update_report_items_list_cubit.dart';
 import '../data/cubits/chatCubits/blocked_users_list_cubit.dart';
@@ -120,6 +124,11 @@ class Api {
   static String postBidItem = "bid-item";
   static String postBuyNow = "buy-now";
   static String getBidHistory = "bid-history";
+  static String getWaitingPayment = "waiting-payment";
+
+  static String getItemDetail = "get-item-detail";
+  static String getPgs = "get-pgs";
+  static String payItem = "pay-item";
 
   //params
   static String id = "id";
@@ -287,6 +296,40 @@ class Api {
       );
 
       var resp = response.data;
+
+      if (response.data['blocked'] == true) {
+        UiUtils.showBlurredDialoge(Constant.navigatorKey.currentContext!,
+            dialoge: BlurredDialogBox(
+              title: response.data['message'].toString(),
+              onAccept: () async {
+                Future.delayed(
+                  Duration.zero,
+                  () {
+                    HiveUtils.clear();
+                    Constant.favoriteItemList.clear();
+                    Constant.navigatorKey.currentContext!.read<UserDetailsCubit>().clear();
+                    Constant.navigatorKey.currentContext!.read<FavoriteCubit>().resetState();
+                    Constant.navigatorKey.currentContext!.read<UpdatedReportItemCubit>().clearItem();
+                    Constant.navigatorKey.currentContext!.read<GetBuyerChatListCubit>().resetState();
+                    Constant.navigatorKey.currentContext!.read<BlockedUsersListCubit>().resetState();
+                    HiveUtils.logoutUser(
+                      Constant.navigatorKey.currentContext!,
+                      onLogout: () {},
+                    );
+                  },
+                );
+              },
+              cancelTextColor: Constant.navigatorKey.currentContext!.color.textColorDark,
+              svgImagePath: AppIcons.logoutIcon,
+              showCancleButton: false,
+              barrierDismissable: false,
+              content: Text(
+                "".translate(Constant.navigatorKey.currentContext!),
+              ),
+            ));
+
+        throw ApiException(response.data['message'].toString());
+      }
 
       if (resp['error'] ?? false) {
         throw ApiException(resp['message'].toString());
@@ -478,6 +521,40 @@ class Api {
           queryParameters: queryParameters,
           options: /*(useAuthToken ?? true) ?*/
               Options(headers: headers()) /* : null*/);
+      print("get response ${response.data['block']}");
+      if (response.data['blocked'] == true) {
+        UiUtils.showBlurredDialoge(Constant.navigatorKey.currentContext!,
+            dialoge: BlurredDialogBox(
+              title: response.data['message'].toString(),
+              onAccept: () async {
+                Future.delayed(
+                  Duration.zero,
+                  () {
+                    HiveUtils.clear();
+                    Constant.favoriteItemList.clear();
+                    Constant.navigatorKey.currentContext!.read<UserDetailsCubit>().clear();
+                    Constant.navigatorKey.currentContext!.read<FavoriteCubit>().resetState();
+                    Constant.navigatorKey.currentContext!.read<UpdatedReportItemCubit>().clearItem();
+                    Constant.navigatorKey.currentContext!.read<GetBuyerChatListCubit>().resetState();
+                    Constant.navigatorKey.currentContext!.read<BlockedUsersListCubit>().resetState();
+                    HiveUtils.logoutUser(
+                      Constant.navigatorKey.currentContext!,
+                      onLogout: () {},
+                    );
+                  },
+                );
+              },
+              cancelTextColor: Constant.navigatorKey.currentContext!.color.textColorDark,
+              svgImagePath: AppIcons.logoutIcon,
+              showCancleButton: false,
+              barrierDismissable: false,
+              content: Text(
+                "".translate(Constant.navigatorKey.currentContext!),
+              ),
+            ));
+
+        throw ApiException(response.data['message'].toString());
+      }
 
       if (response.data['error'] == true) {
         /* if(kDebugMode&&response.data?['details']!=null){
@@ -510,9 +587,15 @@ class Api {
       {required String url,
       /* bool? useAuthToken,*/
       Map<String, dynamic>? queryParameters,
+      Map<String, String>? headerParam,
       bool? useBaseUrl}) async {
     try {
       //
+      if (headerParam != null) {
+        Map<String, dynamic> header = {"Accept": "application/json", "Content-Language": 'en'};
+        headerParam.addAll({"Accept": "application/json", "Content-Language": 'en'});
+      }
+      print(headerParam);
       final Dio dio = Dio();
       dio.interceptors.add(NetworkRequestInterseptor());
       if (!kReleaseMode) {
@@ -531,7 +614,7 @@ class Api {
       final response = await dio.get(url,
           queryParameters: queryParameters,
           options: /*(useAuthToken ?? true) ?*/
-              Options(headers: headers()) /* : null*/);
+              Options(headers: headerParam ?? headers()) /* : null*/);
 
       return response;
     } on DioException catch (e) {

@@ -34,4 +34,10 @@ class ItemBidCubit extends Cubit<ItemBidState> {
       emit(ItemBidFailure(e.toString()));
     }
   }
+
+  @override
+  Future<void> close() {
+    // dispose
+    return super.close();
+  }
 }

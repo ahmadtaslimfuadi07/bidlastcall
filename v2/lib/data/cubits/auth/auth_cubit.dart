@@ -67,6 +67,9 @@ class AuthCubit extends Cubit<AuthState> {
     String? mobile,
     String? sellerName,
     String? buyyerName,
+    String? provinceid,
+    String? cityid,
+    String? subdistrictid,
   }) async {
     Map<String, dynamic> parameters = {
       Api.name: name ?? '',
@@ -77,6 +80,10 @@ class AuthCubit extends Cubit<AuthState> {
       Api.mobile: mobile,
       'seller_uname': sellerName,
       'buyer_uname': buyyerName,
+      'provinceid': provinceid,
+      'cityid': cityid,
+      'subdistrictid': subdistrictid,
+      'country_code': 'ID',
     };
     print(parameters);
     if (fileUserimg != null) {

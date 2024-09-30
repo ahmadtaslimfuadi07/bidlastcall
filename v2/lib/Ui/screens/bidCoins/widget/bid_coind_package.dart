@@ -23,6 +23,7 @@ class BidCoindPackage extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 child: GridView.builder(
                   shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
                   itemCount: state.total,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCountAndFixedHeight(
                     crossAxisCount: 2,

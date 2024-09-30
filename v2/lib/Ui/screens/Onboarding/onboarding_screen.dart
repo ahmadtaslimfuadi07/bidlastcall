@@ -116,31 +116,31 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   //                 ],
                   //               );
                   //             }))),
-                  PositionedDirectional(
-                      top: kPagingTouchSlop,
-                      end: 26,
-                      child: MaterialButton(
-                        onPressed: () {
-                          HiveUtils.setUserIsNotNew();
+                  // PositionedDirectional(
+                  //     top: kPagingTouchSlop,
+                  //     end: 26,
+                  //     child: MaterialButton(
+                  //       onPressed: () {
+                  //         HiveUtils.setUserIsNotNew();
 
-                          Navigator.pushReplacementNamed(
-                            context,
-                            Routes.main,
-                            arguments: {
-                              "from": "login",
-                              "isSkipped": true,
-                            },
-                          );
-                        },
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        color: context.color.forthColor.withOpacity(0.102),
-                        elevation: 0,
-                        height: 28,
-                        minWidth: 64,
-                        child: Text("skip".translate(context)).color(context.color.forthColor),
-                      )),
+                  //         Navigator.pushReplacementNamed(
+                  //           context,
+                  //           Routes.main,
+                  //           arguments: {
+                  //             "from": "login",
+                  //             "isSkipped": true,
+                  //           },
+                  //         );
+                  //       },
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(14),
+                  //       ),
+                  //       color: context.color.forthColor.withOpacity(0.102),
+                  //       elevation: 0,
+                  //       height: 28,
+                  //       minWidth: 64,
+                  //       child: Text("skip".translate(context)).color(context.color.forthColor),
+                  //     )),
                   Positioned.directional(
                       textDirection: Directionality.of(context),
                       top: kPagingTouchSlop + 50,

@@ -180,10 +180,9 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                   padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 16),
                   child: InkWell(
                     onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        Routes.transactionDetail,
-                      );
+                      if ((data[index].hasclosed ?? false) && (data[index].haswinner ?? false)) {
+                        Navigator.pushNamed(context, Routes.transactionDetail, arguments: {'id': data[index].id, 'isBid': false});
+                      }
                     },
                     child: Container(
                         // height: 100,
@@ -203,13 +202,14 @@ class _TransactionHistoryState extends State<TransactionHistory> {
   Widget customTransactionItem(BuildContext context, ItemHistoryModel data) {
     var badgeTitle = '';
     var harga = '';
+
     if (!(data.hasclosed ?? false)) {
       badgeTitle = 'Open';
     } else if (data.hasclosed ?? false) {
       if (data.haswinner ?? false) {
-        badgeTitle = 'Tidak Terjual';
-      } else {
         badgeTitle = 'Terjual';
+      } else {
+        badgeTitle = 'Tidak Terjual';
       }
     }
 
@@ -219,6 +219,23 @@ class _TransactionHistoryState extends State<TransactionHistory> {
       harga = 'Tidak ada Bid';
     } else {
       harga = "${Constant.currencySymbol} ${UiUtils().numberFormat(amount: data.winnerBidPrice)} ";
+    }
+
+    String status = '';
+    if ((data.hasclosed ?? false) && (data.haswinner ?? false)) {
+      if (data.itemPayment == null) {
+        status = 'Menungu pembayaran';
+      } else {
+        if (data.itemPayment?.status == 'review') {
+          status = 'Sudan dibayar';
+        } else {
+          if (data.itemPayment?.istransfered == 0) {
+            status = 'Menunggu pencairan';
+          } else {
+            status = 'Sudan Cair';
+          }
+        }
+      }
     }
 
     return Builder(builder: (context) {
@@ -268,6 +285,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                   const SizedBox(
                     height: 10,
                   ),
+                  if (status != '') Text("Status : $status").size(12),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [

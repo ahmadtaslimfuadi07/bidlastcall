@@ -38,8 +38,6 @@ import '../../Utils/ui_utils.dart';
 import '../../data/cubits/Report/item_report_cubit.dart';
 import '../../data/cubits/Report/update_report_items_list_cubit.dart';
 import '../../data/cubits/favorite/manageFavCubit.dart';
-import '../../data/cubits/item/change_my_items_status_cubit.dart';
-import '../../data/cubits/item/delete_item_cubit.dart';
 import '../../data/cubits/subscription/fetch_user_package_limit_cubit.dart';
 import '../../data/model/ReportProperty/reason_model.dart';
 import 'Home/Widgets/grid_list_adapter.dart';
@@ -130,6 +128,8 @@ class AdDetailsScreenState extends CloudState<AdDetailsScreen> {
   bool bidIsBegin = false;
   bool bidIsFinish = false;
   bool isPaid = false;
+
+  String bidderUname = '';
 
   DateTime? startDate;
   DateTime? endDate;
@@ -269,6 +269,7 @@ class AdDetailsScreenState extends CloudState<AdDetailsScreen> {
   }
 
   void stopTimer() async {
+    start = false;
     timer?.cancel();
     timer = null;
   }
@@ -276,15 +277,19 @@ class AdDetailsScreenState extends CloudState<AdDetailsScreen> {
   void initTimer({required Function() onShowInactivityWarning}) async {
     // adding delay to prevent if there's another that not disposed yet
     Future.delayed(const Duration(milliseconds: 1000), () {
-      if (timer != null) timer?.cancel();
+      // if (timer != null) {
+      //   timer?.cancel();
+      // }
       timer = Timer(Duration(seconds: durationTimer), () => onShowInactivityWarning());
     });
   }
 
+  bool start = true;
   Future getCurrentPrice() async {
-    stopTimer();
+    // stopTimer();
     var response = await Api.customeUrl(url: '${AppSettings.hostUrl}items/${model.id}.json');
     //loop timer
+    if (!start) return;
     initTimer(onShowInactivityWarning: () {
       getCurrentPrice();
     });
@@ -294,6 +299,7 @@ class AdDetailsScreenState extends CloudState<AdDetailsScreen> {
         currentBid = response.data['last_price'] is int ? response.data['last_price'] : int.parse(response.data['last_price']);
         currentBidTemp = currentBid + (model.minbid ?? 0);
         isPaid = response.data['status'] == 'open' ? false : true;
+        bidderUname = response.data['bidder_uname'] ?? '';
       });
     }
   }
@@ -595,7 +601,7 @@ class AdDetailsScreenState extends CloudState<AdDetailsScreen> {
 
                         // setPriceAndStatus(),
 
-                        if (model.customFields!.isNotEmpty) Divider(thickness: 1, color: context.color.textDefaultColor.withOpacity(0.1)),
+                        // if (model.customFields?.isNotEmpty ?? [].isEmpty) Divider(thickness: 1, color: context.color.textDefaultColor.withOpacity(0.1)),
                         Divider(thickness: 1, color: context.color.textDefaultColor.withOpacity(0.1)),
 
                         customFields(),
@@ -910,11 +916,11 @@ class AdDetailsScreenState extends CloudState<AdDetailsScreen> {
 
   Widget customFields() {
     List data = [
-      {'name': 'Kondisi', 'value': 'Bekas'},
+      {'name': 'Kondisi', 'value': '${(model.goodscondition ?? '').firstUpperCase()}'},
       {'name': 'Dilihat', 'value': '${model.views}'.priceFormate()},
       {'name': 'Jumlah Bidder', 'value': '20'.priceFormate()},
       {'name': 'Kategori', 'value': model.category?.name},
-      {'name': 'Sub Kategori', 'value': 'Basket'},
+      // {'name': 'Sub Kategori', 'value': 'Basket'},
     ];
     return Wrap(
       children: [
@@ -1035,6 +1041,7 @@ class AdDetailsScreenState extends CloudState<AdDetailsScreen> {
 
   Widget bottomButtonWidget() {
     bool active = bidIsBegin && bidIsFinish && !isPaid && !isAddedByMe;
+    bool activeBid = bidIsBegin && bidIsFinish && !isPaid;
     return Container(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -1047,6 +1054,12 @@ class AdDetailsScreenState extends CloudState<AdDetailsScreen> {
                 width: 8.rw(context),
               ),
               Text("${currentBid}".priceFormate()).size(context.font.normal).setMaxLines(lines: 2).color(context.color.textDefaultColor).bold(),
+              Expanded(
+                  child: Text(
+                " ${bidderUname != '' ? '- ${bidderUname} ' : ''}".toUpperCase(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              )),
             ],
           ),
           SizedBox(
@@ -1059,17 +1072,17 @@ class AdDetailsScreenState extends CloudState<AdDetailsScreen> {
                 context,
                 outerPadding: EdgeInsets.only(right: 6),
                 onPressed: () {
-                  if (active && currentBidTemp > currentBid + (model.minbid ?? 0)) {
+                  if (activeBid && currentBidTemp > currentBid + (model.minbid ?? 0)) {
                     changeCurrentBid(false);
                   }
                 },
                 buttonTitle: '-',
                 height: 20.rh(context),
                 width: 30.rw(context),
-                radius: 2,
+                radius: 8,
                 fontSize: 14,
                 disabledColor: Colors.grey[300],
-                disabled: !active,
+                disabled: !activeBid,
                 padding: EdgeInsets.all(
                   6,
                 ),
@@ -1079,6 +1092,7 @@ class AdDetailsScreenState extends CloudState<AdDetailsScreen> {
                 child: Text('${UiUtils().numberFormat(amount: currentBidTemp)}'),
                 decoration: BoxDecoration(
                     color: context.color.textDefaultColor.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(8),
                     border: Border.all(
                       color: context.color.textDefaultColor.withOpacity(0.15),
                     )),
@@ -1087,15 +1101,15 @@ class AdDetailsScreenState extends CloudState<AdDetailsScreen> {
                 context,
                 outerPadding: EdgeInsets.only(left: 6),
                 onPressed: () {
-                  if (active) changeCurrentBid(true);
+                  if (activeBid) changeCurrentBid(true);
                 },
                 buttonTitle: '+',
                 height: 20.rh(context),
                 width: 30.rw(context),
-                radius: 2,
+                radius: 8,
                 fontSize: 14,
                 disabledColor: Colors.grey[300],
-                disabled: !active,
+                disabled: !activeBid,
                 padding: EdgeInsets.all(
                   6,
                 ),
@@ -1108,7 +1122,7 @@ class AdDetailsScreenState extends CloudState<AdDetailsScreen> {
                   context,
                   outerPadding: EdgeInsets.zero,
                   onPressed: () {
-                    if (active) {
+                    if (activeBid) {
                       int bidAmount = currentBidTemp - currentBid;
                       context.read<ItemBidCubit>().itemBid(model.id ?? 0, bidAmount, currentBidTemp);
                     }
@@ -1116,10 +1130,10 @@ class AdDetailsScreenState extends CloudState<AdDetailsScreen> {
                   buttonTitle: 'Bid',
                   height: 20.rh(context),
                   width: 50.rw(context),
-                  radius: 2,
+                  radius: 8,
                   fontSize: 14,
                   disabledColor: Colors.grey[300],
-                  disabled: !active,
+                  disabled: !activeBid,
                   padding: EdgeInsets.all(
                     6,
                   ),
@@ -1139,7 +1153,7 @@ class AdDetailsScreenState extends CloudState<AdDetailsScreen> {
                     buttonTitle: 'Buy Now',
                     height: 20.rh(context),
                     width: 50.rw(context),
-                    radius: 2,
+                    radius: 8,
                     fontSize: 14,
                     outerPadding: EdgeInsets.only(top: 6),
                     disabledColor: Colors.grey[300],

@@ -51,6 +51,8 @@ class UiUtils {
       value = DateFormat('d MMM yyyy - hh:mm', lang).format(DateTime.parse(dateParams));
     } else if (displayOption == 12) {
       value = DateFormat('MM dd, yyyy - hh:mm', lang).format(DateTime.parse(dateParams));
+    } else if (displayOption == 13) {
+      value = DateFormat('yyyy-MM-dd', lang).format(DateTime.parse(dateParams));
     }
     return value;
   }
@@ -225,7 +227,7 @@ class UiUtils {
             width: width,
             height: height,
             child: Image.asset(
-              'assets/svg/logo.png',
+              'assets/svg/logo.jpg',
               opacity: const AlwaysStoppedAnimation(.3),
             ),
 

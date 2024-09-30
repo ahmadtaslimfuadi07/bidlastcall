@@ -280,7 +280,7 @@ class SplashScreenState extends State<SplashScreen> with TickerProviderStateMixi
                               width: 150.rw(context),
                               height: 150.rh(context),
                               // child: UiUtils.getSvg(AppIcons.splashLogo),
-                              child: Image.asset('assets/svg/logo.png'),
+                              child: Image.asset('assets/svg/logo.jpg'),
                             ),
                           ),
                         ),

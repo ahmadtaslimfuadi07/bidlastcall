@@ -4,6 +4,7 @@ import 'package:eClassify/data/cubits/Location/fetch_cities_cubit.dart';
 import 'package:eClassify/data/cubits/Location/fetch_countries_cubit.dart';
 import 'package:eClassify/data/cubits/Location/fetch_states_cubit.dart';
 import 'package:eClassify/data/cubits/Utility/fetch_history_bid_cubit.dart';
+import 'package:eClassify/data/cubits/Utility/fetch_history_detail_bid_cubit.dart';
 import 'package:eClassify/data/cubits/Utility/fetch_transactions_cubit.dart';
 import 'package:eClassify/data/cubits/auth/delete_user_cubit.dart';
 import 'package:eClassify/data/cubits/bidCoins/fetch_bid_coins_cubit.dart';
@@ -22,6 +23,9 @@ import 'package:eClassify/data/cubits/item/item_buy_now_cubit.dart';
 import 'package:eClassify/data/cubits/item/search_Item_cubit.dart';
 import 'package:eClassify/data/cubits/safety_tips_cubit.dart';
 import 'package:eClassify/data/cubits/subscription/fetch_featured_subscription_packages_cubit.dart';
+import 'package:eClassify/data/cubits/subscription/fetch_transaction_upload_cubit.dart';
+import 'package:eClassify/data/cubits/subscription/fetch_waiting_payment_cubit.dart';
+import 'package:eClassify/data/cubits/subscription/get_payment_cubit.dart';
 import 'package:nested/nested.dart';
 import '../data/cubits/CustomField/fetch_custom_fields_cubit.dart';
 import '../data/cubits/Home/fetch_home_all_items_cubit.dart';
@@ -117,5 +121,9 @@ class RegisterCubits {
     BlocProvider(create: (context) => ItemBidCubit()),
     BlocProvider(create: (context) => ItemBuyNowCubit()),
     BlocProvider(create: (context) => FetchHistoryBidCubit()),
+    BlocProvider(create: (context) => FetchHistoryDetailBidCubit()),
+    BlocProvider(create: (context) => GetPaymentCubit()),
+    BlocProvider(create: (context) => FetcTransactionUploadCubit()),
+    BlocProvider(create: (context) => FetchWaitingPaymentCubit()),
   ];
 }

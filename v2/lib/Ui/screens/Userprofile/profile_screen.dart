@@ -291,6 +291,18 @@ class _ProfileScreenState extends State<ProfileScreen> with AutomaticKeepAliveCl
                             context: context);
                       },
                     ),
+                    customTile(
+                      context,
+                      title: "Waiting Payment".translate(context),
+                      svgImagePath: AppIcons.transaction,
+                      onTap: () {
+                        UiUtils.checkUser(
+                            onNotGuest: () {
+                              Navigator.pushNamed(context, Routes.waitingPayment);
+                            },
+                            context: context);
+                      },
+                    ),
 
                     ValueListenableBuilder(
                         valueListenable: isDarkTheme,

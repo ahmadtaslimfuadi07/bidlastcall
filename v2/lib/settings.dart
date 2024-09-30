@@ -37,6 +37,9 @@ class AppSettings {
   // static const String hostUrl = "https://eclassify.wrteam.me/"; // DON'T ADD / AT END
   static const String hostUrl = "http://bidlastcall.com/"; // DON'T ADD / AT END
 
+  static const String rajaOngkirUrl = "https://pro.rajaongkir.com/api/"; // DON'T ADD / AT END
+  static const String keyRajaOngkir = "6c40c9e500d3c6a07eab54e5a39b978e"; // DON'T ADD / AT END
+
   static const int apiDataLoadLimit = 20;
   static const int maxCategoryShowLengthInHomeScreen = 5;
 

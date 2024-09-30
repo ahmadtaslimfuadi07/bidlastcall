@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:country_picker/country_picker.dart';
@@ -5,9 +6,11 @@ import 'package:eClassify/Ui/screens/widgets/custom_text_form_field.dart';
 import 'package:eClassify/Ui/screens/widgets/image_cropper.dart';
 import 'package:eClassify/Utils/AppIcon.dart';
 import 'package:eClassify/Utils/Extensions/extensions.dart';
+import 'package:eClassify/Utils/api.dart';
 import 'package:eClassify/Utils/responsiveSize.dart';
 import 'package:eClassify/Utils/ui_utils.dart';
 import 'package:eClassify/data/cubits/auth/authentication_cubit.dart';
+import 'package:eClassify/data/model/Location/areaModel.dart';
 import 'package:eClassify/data/model/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -70,6 +73,14 @@ class UserProfileScreenState extends State<UserProfileScreen> {
   bool? isLoading;
   String? countryCode = "+${Constant.defaultCountryCode}";
 
+  String provinceId = '';
+  String cityId = '';
+  String districtId = '';
+
+  List<ProvinceModel> provinceData = [];
+  List<CityModel> cityData = [];
+  List<DistrictModel> districtData = [];
+
   @override
   void initState() {
     super.initState();
@@ -80,12 +91,18 @@ class UserProfileScreenState extends State<UserProfileScreen> {
     latitude = HiveUtils.getLatitude();
     longitude = HiveUtils.getLongitude();
 
+    print(HiveUtils.getUserDetails().provinceid);
     nameController.text = (HiveUtils.getUserDetails().name) ?? "";
     sellerUnameController.text = (HiveUtils.getUserDetails().sellerUname) ?? "";
     buyerUnameController.text = (HiveUtils.getUserDetails().buyerUname) ?? "";
-
     emailController.text = HiveUtils.getUserDetails().email ?? "";
     addressController.text = HiveUtils.getUserDetails().address ?? "";
+
+    provinceId = HiveUtils.getUserDetails().provinceid ?? "";
+    cityId = HiveUtils.getUserDetails().cityid ?? "";
+    districtId = HiveUtils.getUserDetails().subdistrictid ?? "";
+    print("isi sudsirt ${HiveUtils.getUserDetails().subdistrictid ?? ""}");
+
     if (widget.from == "login") {
       isNotificationsEnabled = true;
     } else {
@@ -98,6 +115,14 @@ class UserProfileScreenState extends State<UserProfileScreen> {
     } else {
       phoneController.text = HiveUtils.getUserDetails().mobile != null ? HiveUtils.getUserDetails().mobile! : "";
     }
+
+    getProvince();
+    if (provinceId != '') {
+      getCity(provinceId);
+    }
+    if (cityId != '') {
+      getDistrict(cityId);
+    }
   }
 
   @override
@@ -107,6 +132,62 @@ class UserProfileScreenState extends State<UserProfileScreen> {
     nameController.dispose();
     emailController.dispose();
     addressController.dispose();
+  }
+
+  Future getProvince() async {
+    var header = {'key': AppSettings.keyRajaOngkir};
+    var response = await Api.customeUrl(url: '${AppSettings.rajaOngkirUrl}province', headerParam: header);
+    //loop timer
+    var data = jsonDecode(response.toString());
+
+    if (response != null) {
+      data["rajaongkir"]['results'].forEach((v) {
+        provinceData.add(ProvinceModel.fromJson(v));
+      });
+
+      setState(() {});
+    }
+  }
+
+  bool cityLoading = false;
+  bool districtLoading = false;
+  Future getCity(String id) async {
+    cityLoading = true;
+    cityData = [];
+    setState(() {});
+    var header = {'key': AppSettings.keyRajaOngkir};
+    Map<String, dynamic> param = {'province': id};
+    var response = await Api.customeUrl(url: '${AppSettings.rajaOngkirUrl}city', queryParameters: param, headerParam: header);
+    //loop timer
+    var data = jsonDecode(response.toString());
+
+    if (response != null) {
+      data["rajaongkir"]['results'].forEach((v) {
+        cityData.add(CityModel.fromJson(v));
+      });
+    }
+    cityLoading = false;
+    setState(() {});
+  }
+
+  Future getDistrict(String id) async {
+    districtLoading = true;
+    districtData = [];
+    setState(() {});
+    var header = {'key': AppSettings.keyRajaOngkir};
+    Map<String, dynamic> param = {'city': id};
+
+    var response = await Api.customeUrl(url: '${AppSettings.rajaOngkirUrl}subdistrict', queryParameters: param, headerParam: header);
+    //loop timer
+    var data = jsonDecode(response.toString());
+
+    if (response != null) {
+      data["rajaongkir"]['results'].forEach((v) {
+        districtData.add(DistrictModel.fromJson(v));
+      });
+    }
+    districtLoading = false;
+    setState(() {});
   }
 
   /* void _onTapChooseLocation() async {
@@ -190,6 +271,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                               controller: buyerUnameController,
                               validator: CustomTextFieldValidator.nullCheck,
                             ),
+
                             buildTextField(
                               context,
                               readOnly: HiveUtils.getUserDetails().type == AuthenticationType.email.name ||
@@ -202,6 +284,69 @@ class UserProfileScreenState extends State<UserProfileScreen> {
                               validator: CustomTextFieldValidator.email,
                             ),
                             phoneWidget(),
+                            dropDown(
+                                false,
+                                'Province',
+                                provinceData.map((item) {
+                                  return DropdownMenuItem<String>(
+                                    value: item.provinceId,
+                                    child: Text(
+                                      item.province ?? '',
+                                      // style: GoogleFonts.nunito(color: Colors.black),
+                                    ),
+                                  );
+                                }).toList(),
+                                provinceId, (val) {
+                              setState(() {
+                                provinceId = val;
+                                cityId = '';
+                                getCity(provinceId);
+                              });
+                            }),
+                            dropDown(
+                              cityLoading,
+                              'City',
+                              cityData.map((item) {
+                                return DropdownMenuItem<String>(
+                                  value: item.cityId,
+                                  child: Text(
+                                    "${item.type == 'Kabupaten' ? 'Kab.' : item.type} ${item.cityName}",
+                                    // style: GoogleFonts.nunito(color: Colors.black),
+                                  ),
+                                );
+                              }).toList(),
+                              cityId,
+                              (val) {
+                                setState(
+                                  () {
+                                    cityId = val;
+                                    districtId = '';
+                                    getDistrict(cityId);
+                                  },
+                                );
+                              },
+                            ),
+                            dropDown(
+                              districtLoading,
+                              'District',
+                              districtData.map((item) {
+                                return DropdownMenuItem<String>(
+                                  value: item.subdistrictId,
+                                  child: Text(
+                                    "${item.subdistrictName}",
+                                    // style: GoogleFonts.nunito(color: Colors.black),
+                                  ),
+                                );
+                              }).toList(),
+                              districtId,
+                              (val) {
+                                setState(
+                                  () {
+                                    districtId = val;
+                                  },
+                                );
+                              },
+                            ),
                             buildAddressTextField(
                               context,
                               title: "addressLbl",
@@ -255,6 +400,68 @@ class UserProfileScreenState extends State<UserProfileScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget loadingDropdown() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Color(0xFFE2E4E7), width: 1),
+      ),
+      child: Text('Loading....'),
+    );
+  }
+
+  Widget dropDown(bool isloading, String title, List<DropdownMenuItem<String>>? items, String selected, Function(String) function) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 10.rh(context),
+        ),
+        Text(title.translate(context)).color(context.color.textDefaultColor),
+        SizedBox(
+          height: 10.rh(context),
+        ),
+        isloading
+            ? loadingDropdown()
+            : DropdownButtonFormField<String>(
+                dropdownColor: Colors.white,
+                icon: const Icon(
+                  Icons.keyboard_arrow_down,
+                  color: Color(0xFFE2E4E7),
+                ),
+                value: selected == '' ? null : selected,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                  fillColor: Colors.white,
+                  filled: true,
+                  hintText: title,
+                  alignLabelWithHint: false,
+                  hintStyle: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500, height: 0),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Color(0xFFE2E4E7), width: 1),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.black, width: 1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                items: items,
+                onChanged: (String? value) {
+                  function.call(value ?? '');
+                  setState(() {
+                    selected = value ?? '';
+                  });
+                },
+              ),
+      ],
     );
   }
 
@@ -565,7 +772,7 @@ class UserProfileScreenState extends State<UserProfileScreen> {
     }
   }
 
-  profileupdateprocess() async {
+  Future profileupdateprocess() async {
     setState(() {
       isLoading = true;
     });
@@ -580,6 +787,9 @@ class UserProfileScreenState extends State<UserProfileScreen> {
             notification: isNotificationsEnabled == true ? "1" : "0",
             buyyerName: buyerUnameController.text,
             sellerName: sellerUnameController.text,
+            cityid: cityId,
+            provinceid: provinceId,
+            subdistrictid: districtId,
           );
 
       Future.delayed(

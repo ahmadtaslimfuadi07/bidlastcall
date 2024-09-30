@@ -1,4 +1,5 @@
 import 'package:eClassify/data/cubits/Utility/fetch_history_bid_cubit.dart';
+import 'package:eClassify/data/cubits/subscription/fetch_waiting_payment_cubit.dart';
 import 'package:eClassify/data/model/item/item_model.dart';
 import 'package:flutter/material.dart';
 
@@ -11,8 +12,8 @@ import '../widgets/AnimatedRoutes/blur_page_route.dart';
 import '../widgets/Errors/no_data_found.dart';
 import '../widgets/Errors/something_went_wrong.dart';
 
-class TransactionHistoryBidScreen extends StatefulWidget {
-  const TransactionHistoryBidScreen({super.key});
+class WaitingPaymentScreen extends StatefulWidget {
+  const WaitingPaymentScreen({super.key});
 
   static Route route(RouteSettings settings) {
     return BlurredRouter(
@@ -21,17 +22,17 @@ class TransactionHistoryBidScreen extends StatefulWidget {
           create: (context) {
             return FetchTransactionsCubit();
           },
-          child: const TransactionHistoryBidScreen(),
+          child: const WaitingPaymentScreen(),
         );
       },
     );
   }
 
   @override
-  State<TransactionHistoryBidScreen> createState() => _TransactionHistoryState();
+  State<WaitingPaymentScreen> createState() => _TransactionHistoryState();
 }
 
-class _TransactionHistoryState extends State<TransactionHistoryBidScreen> {
+class _TransactionHistoryState extends State<WaitingPaymentScreen> {
   late final ScrollController _pageScrollController = ScrollController();
 
   /* ..addListener(_pageScrollListener);*/
@@ -42,8 +43,7 @@ class _TransactionHistoryState extends State<TransactionHistoryBidScreen> {
 
   @override
   void initState() {
-    AdHelper.loadInterstitialAd();
-    context.read<FetchHistoryBidCubit>().fetchHistoryBid();
+    context.read<FetchWaitingPaymentCubit>().getWaitingPayment();
     super.initState();
   }
 
@@ -60,53 +60,19 @@ class _TransactionHistoryState extends State<TransactionHistoryBidScreen> {
         backgroundColor: context.color.primaryColor,
         appBar: UiUtils.buildAppBar(
           context,
-          title: "Bid Transaction",
-          // bottomHeight: 49,
-          // bottomHeight: 49,
-          // bottom: [
-          //   SizedBox(
-          //     width: context.screenWidth,
-          //     height: 45,
-          //     child: ListView.separated(
-          //       shrinkWrap: true,
-          //       padding: const EdgeInsetsDirectional.fromSTEB(18, 5, 18, 2),
-          //       scrollDirection: Axis.horizontal,
-          //       itemBuilder: (context, index) {
-          //         Map section = sections[index];
-          //         return customTab(
-          //           context,
-          //           isSelected: (selectTab == index),
-          //           onTap: () {
-          //             selectTab = index;
-          //             //itemScreenCurrentPage = index;
-          //             setState(() {});
-          //             _pageController.jumpToPage(index);
-          //           },
-          //           name: section['title'],
-          //           onDoubleTap: () {},
-          //         );
-          //       },
-          //       separatorBuilder: (context, index) {
-          //         return const SizedBox(
-          //           width: 8,
-          //         );
-          //       },
-          //       itemCount: sections.length,
-          //     ),
-          //   ),
-          // ],
+          title: "Waiting Payment",
         ),
-        body: BlocBuilder<FetchHistoryBidCubit, FetchHistoryBidState>(
+        body: BlocBuilder<FetchWaitingPaymentCubit, FetchWaitingPaymentState>(
           builder: (context, state) {
-            if (state is FetchHistoryBidInProgress) {
+            if (state is FetchWaitingPaymentInProgress) {
               return Center(
                 child: UiUtils.progress(),
               );
             }
-            if (state is FetchHistoryBidFailure) {
+            if (state is FetchWaitingPaymentFailure) {
               return const SomethingWentWrong();
             }
-            if (state is FetchHistoryBidSuccess) {
+            if (state is FetchWaitingPaymentSuccess) {
               if (state.historyData.isEmpty) {
                 return NoDataFound(
                   onTap: () {
@@ -144,13 +110,7 @@ class _TransactionHistoryState extends State<TransactionHistoryBidScreen> {
                             padding: const EdgeInsets.symmetric(vertical: 3.0, horizontal: 16),
                             child: InkWell(
                               onTap: () {
-                                if ((data.iswinner ?? false) && data.bidstatus != 'open') {
-                                  Navigator.pushNamed(context, Routes.transactionDetail, arguments: {'id': data.id, 'isBid': true});
-                                } else if (data.bidstatus == 'open') {
-                                  Navigator.pushNamed(context, Routes.adDetailsScreen, arguments: {
-                                    "model": data,
-                                  });
-                                }
+                                Navigator.pushNamed(context, Routes.transactionDetail, arguments: {'id': data.id, 'isBid': true});
                               },
                               child: Container(
                                   // height: 100,
@@ -210,63 +170,54 @@ class _TransactionHistoryState extends State<TransactionHistoryBidScreen> {
               width: 4,
             ),
             Expanded(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: 60, maxHeight: 200),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 4),
-                    Container(
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: context.color.territoryColor.withOpacity(0.1)),
-                      padding: EdgeInsets.symmetric(vertical: 3, horizontal: 7),
-                      child: Text(
-                        "${transaction.bidstatus != 'open' ? (transaction.iswinner ?? false) ? 'WIN - ' : 'LOSE - ' : ''} ${Constant.currencySymbol} ${UiUtils().numberFormat(amount: transaction.winnerBidPrice)}",
-                      ).size(context.font.small).color(context.color.territoryColor),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text("${transaction.name}").bold(),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Status BID ").size(10),
-                            if (transaction.bidstatus != 'open' && (transaction.iswinner ?? false) && (transaction.itemPayment == null)) Text("Bayar Sebelum ").size(10),
-                          ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 4),
+                  // Container(
+                  //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: context.color.territoryColor.withOpacity(0.1)),
+                  //   padding: EdgeInsets.symmetric(vertical: 3, horizontal: 7),
+                  //   child: Text(
+                  //     "${transaction.bidstatus != 'open' ? (transaction.iswinner ?? false) ? 'WIN - ' : 'LOSE - ' : ''} ${Constant.currencySymbol} ${UiUtils().numberFormat(amount: transaction.winnerBidPrice)}",
+                  //   ).size(context.font.small).color(context.color.territoryColor),
+                  // ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(minHeight: 60, maxHeight: 200),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("${transaction.name}").bold(),
+                              Text("${transaction.bidstatus?.toUpperCase()} BID").size(10),
+                              const SizedBox(height: 4),
+                              Text(
+                                transaction.enddt.toString().formatDate(),
+                              ).size(context.font.small),
+                            ],
+                          ),
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(" : ${transaction.bidstatus?.toUpperCase()} BID").size(10),
-                            if (transaction.bidstatus != 'open' && (transaction.iswinner ?? false) && (transaction.itemPayment == null))
-                              Text(" : ${transaction.expirePaymentAt?.toUpperCase()}").size(10),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          transaction.enddt.toString().formatDate(),
-                        ).size(context.font.small),
-                        Text(
-                          "${Constant.currencySymbol}\t ${UiUtils().numberFormat(amount: transaction.myBidPrice)} ",
-                        ).bold(weight: FontWeight.w700).color(context.color.territoryColor).size(12),
-                      ],
-                    ),
-                    SizedBox(height: 8),
-                  ],
-                ),
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            "${Constant.currencySymbol}\t ${UiUtils().numberFormat(amount: transaction.closeprice)} ",
+                          ).bold(weight: FontWeight.w700).color(context.color.territoryColor).size(12),
+
+                          // Text(transaction.paymentStatus!.toString().firstUpperCase()),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
             // GestureDetector(

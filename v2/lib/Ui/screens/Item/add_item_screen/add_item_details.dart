@@ -75,6 +75,7 @@ class _AddItemDetailsState extends CloudState<AddItemDetails> {
   final TextEditingController adPhoneNumberController = TextEditingController();
   final TextEditingController adAdditionalDetailsController = TextEditingController();
   final TextEditingController adEndDateController = TextEditingController();
+  final TextEditingController wightController = TextEditingController();
 
   List<String> conditionData = ['New', "Second-hand"];
 
@@ -322,6 +323,7 @@ class _AddItemDetailsState extends CloudState<AddItemDetails> {
                       "minbid": minBid,
                       "startbid": startBid,
                       "goodscondition": condition == 'New' ? 'baru' : 'bekas',
+                      "weight": wightController.text,
                       // "image": _pickTitleImage.pickedFile,
                       // "gallery_images": galleryImages,
                     });
@@ -344,6 +346,8 @@ class _AddItemDetailsState extends CloudState<AddItemDetails> {
                         "goodscondition": condition == 'New' ? 'baru' : 'bekas',
                         "minbid": minBid,
                         "startbid": startBid,
+                        "weight": wightController.text,
+
                         //missing in API
                         /* "image": _pickTitleImage.pickedFile,
                         "gallery_images": galleryImages,*/
@@ -472,6 +476,22 @@ class _AddItemDetailsState extends CloudState<AddItemDetails> {
                             condition = val;
                           });
                         },
+                      ),
+                      SizedBox(
+                        height: 15.rh(context),
+                      ),
+                      Text("${"Weight (Kg)".translate(context)}"),
+                      SizedBox(
+                        height: 10.rh(context),
+                      ),
+                      CustomTextFormField(
+                        controller: wightController,
+                        // controller: _itemNameController,
+                        validator: CustomTextFieldValidator.slug,
+                        action: TextInputAction.next,
+                        hintText: "weight".translate(context),
+                        keyboard: TextInputType.number,
+                        hintTextStyle: TextStyle(color: context.color.textDefaultColor.withOpacity(0.5), fontSize: context.font.large),
                       ),
 
                       SizedBox(

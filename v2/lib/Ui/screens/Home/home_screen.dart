@@ -7,7 +7,6 @@ import 'package:eClassify/data/cubits/Home/fetch_home_all_items_cubit.dart';
 import 'package:eClassify/data/cubits/Home/fetch_home_screen_cubit.dart';
 import 'package:eClassify/data/cubits/favorite/favoriteCubit.dart';
 
-import 'package:eClassify/data/model/Home/home_screen_section.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 //import 'package:uni_links/uni_links.dart';
@@ -15,7 +14,6 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../Utils/api.dart';
 
 import '../../../data/cubits/chatCubits/blocked_users_list_cubit.dart';
-import '../../../data/cubits/chatCubits/get_buyer_chat_users_cubit.dart';
 import '../../../data/helper/designs.dart';
 import '../../../data/model/item/item_model.dart';
 import '../../../data/model/system_settings_model.dart';
@@ -23,7 +21,6 @@ import '../../../exports/main_export.dart';
 import '../../../utils/Extensions/extensions.dart';
 import '../../../utils/responsiveSize.dart';
 import '../../../utils/ui_utils.dart';
-import '../AdBannderScreen.dart';
 import '../Widgets/Errors/no_internet.dart';
 import '../Widgets/Errors/something_went_wrong.dart';
 import '../Widgets/shimmerLoadingContainer.dart';
@@ -67,9 +64,7 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin, A
     addPageScrollListener();
     notificationPermissionChecker();
 
-    context.read<SliderCubit>().fetchSlider(
-          context,
-        );
+    context.read<SliderCubit>().fetchSlider(context);
     context.read<FetchCategoryCubit>().fetchCategories();
     context.read<FetchHomeScreenCubit>().fetch(city: HiveUtils.getCityName(), areaId: HiveUtils.getAreaId());
     context.read<FetchHomeAllItemsCubit>().fetch(city: HiveUtils.getCityName(), areaId: HiveUtils.getAreaId());

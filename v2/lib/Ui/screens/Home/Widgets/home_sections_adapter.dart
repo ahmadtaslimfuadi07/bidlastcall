@@ -268,7 +268,10 @@ class _ItemCardState extends State<ItemCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("${Constant.currencySymbol} ${UiUtils().numberFormat(amount: widget.item?.itemBid!.bidPrice)}").bold().color(context.color.territoryColor).size(context.font.large),
+                        Text("${Constant.currencySymbol} ${UiUtils().numberFormat(amount: widget.item?.itemBid?.bidPrice ?? widget.item?.startbid)}")
+                            .bold()
+                            .color(context.color.territoryColor)
+                            .size(context.font.large),
                         Text(widget.item!.name!).firstUpperCaseWidget().setMaxLines(lines: 1).size(context.font.large),
                         if (widget.item?.address != "")
                           Row(

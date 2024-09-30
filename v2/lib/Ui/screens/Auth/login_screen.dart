@@ -705,38 +705,38 @@ class LoginScreenState extends State<LoginScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Align(
-            alignment: AlignmentDirectional.bottomEnd,
-            child: FittedBox(
-              fit: BoxFit.none,
-              child: MaterialButton(
-                onPressed: () {
-                  HelperUtils.killPreviousPages(context, Routes.main, {
-                    "from": "login",
-                    "isSkipped": true,
-                  });
-                  /* Navigator.pushReplacementNamed(
-                    context,
-                    Routes.main,
-                    arguments: {
-                      "from": "login",
-                      "isSkipped": true,
-                    },
-                  );*/
-                },
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                color: context.color.forthColor.withOpacity(0.102),
-                elevation: 0,
-                height: 28,
-                minWidth: 64,
-                child: Text("skip".translate(context)).color(context.color.forthColor),
-              ),
-            ),
-          ),
+          // Align(
+          //   alignment: AlignmentDirectional.bottomEnd,
+          //   child: FittedBox(
+          //     fit: BoxFit.none,
+          //     child: MaterialButton(
+          //       onPressed: () {
+          //         HelperUtils.killPreviousPages(context, Routes.main, {
+          //           "from": "login",
+          //           "isSkipped": true,
+          //         });
+          //         /* Navigator.pushReplacementNamed(
+          //           context,
+          //           Routes.main,
+          //           arguments: {
+          //             "from": "login",
+          //             "isSkipped": true,
+          //           },
+          //         );*/
+          //       },
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(14),
+          //       ),
+          //       color: context.color.forthColor.withOpacity(0.102),
+          //       elevation: 0,
+          //       height: 28,
+          //       minWidth: 64,
+          //       child: Text("skip".translate(context)).color(context.color.forthColor),
+          //     ),
+          //   ),
+          // ),
           const SizedBox(
-            height: 66,
+            height: 90,
           ),
           Text("signInWithEmail".translate(context)).size(context.font.extraLarge),
           const SizedBox(

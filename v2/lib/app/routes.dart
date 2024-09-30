@@ -16,6 +16,9 @@ import 'package:eClassify/Ui/screens/Location/states_screen.dart';
 import 'package:eClassify/Ui/screens/SubCategory/SubCategoryScreen.dart';
 import 'package:eClassify/Ui/screens/Subscription/transaction_history_bid_screen.dart';
 import 'package:eClassify/Ui/screens/Subscription/transaction_history_detail_screen.dart';
+import 'package:eClassify/Ui/screens/Subscription/transaction_upload/success_transaction_upload_screen.dart';
+import 'package:eClassify/Ui/screens/Subscription/transaction_upload/transaction_upload_screen.dart';
+import 'package:eClassify/Ui/screens/Subscription/waiting_payment_screen.dart';
 import 'package:eClassify/Ui/screens/ad_details_screen.dart';
 import 'package:eClassify/Ui/screens/bidCoins/bid_coind_upload_screen.dart';
 import 'package:eClassify/Ui/screens/bidCoins/bid_coins_add_screen.dart';
@@ -130,7 +133,10 @@ class Routes {
   static const addBidCoins = '/addBidCoins';
   static const bidCoinsUpload = '/bidCoinsUpload';
   static const successBidCoinsScreen = '/successBidCoinsScreen';
+  static const successTransactionScreen = '/successTransactionScreen';
   static const transactionDetail = '/transactionDetail';
+  static const transactionUpload = '/transactionUpload';
+  static const waitingPayment = '/waitingPayment';
 
   // static const myItemsScreen = '/myItemsScreen';
 
@@ -288,11 +294,17 @@ class Routes {
         return BidCoinsAddScreen.route(routeSettings);
       case bidCoinsUpload:
         return BidCoindUploadScreen.route(routeSettings);
+      case transactionUpload:
+        return TransactionUploadScreen.route(routeSettings);
       case successBidCoinsScreen:
         return SuccessBidCoinsScreen.route(routeSettings);
+      case successTransactionScreen:
+        return SuccessTransactionUploadScreen.route(routeSettings);
 
       case transactionDetail:
-        return TransactionHistoryDetailScreen.route(routeSettings);
+        return TransactionHistoryBidDetailScreen.route(routeSettings);
+      case waitingPayment:
+        return WaitingPaymentScreen.route(routeSettings);
 
       /*  case myItemsScreen:
         return ItemsScreen.route(routeSettings);*/
