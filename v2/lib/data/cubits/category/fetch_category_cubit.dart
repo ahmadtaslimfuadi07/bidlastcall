@@ -20,6 +20,7 @@ class FetchCategorySuccess extends FetchCategoryState {
   final bool isLoadingMore;
   final bool hasError;
   final List<CategoryModel> categories;
+  final List<CategoryModel> categoriesSearch;
 
   FetchCategorySuccess({
     required this.total,
@@ -27,6 +28,7 @@ class FetchCategorySuccess extends FetchCategoryState {
     required this.isLoadingMore,
     required this.hasError,
     required this.categories,
+    required this.categoriesSearch,
   });
 
   FetchCategorySuccess copyWith({
@@ -35,6 +37,7 @@ class FetchCategorySuccess extends FetchCategoryState {
     bool? isLoadingMore,
     bool? hasError,
     List<CategoryModel>? categories,
+    List<CategoryModel>? categoriesSearch,
   }) {
     return FetchCategorySuccess(
       total: total ?? this.total,
@@ -42,6 +45,7 @@ class FetchCategorySuccess extends FetchCategoryState {
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       hasError: hasError ?? this.hasError,
       categories: categories ?? this.categories,
+      categoriesSearch: categoriesSearch ?? this.categoriesSearch,
     );
   }
 
@@ -52,6 +56,7 @@ class FetchCategorySuccess extends FetchCategoryState {
       'isLoadingMore': isLoadingMore,
       'hasError': hasError,
       'categories': categories.map((x) => x.toJson()).toList(),
+      'categoriesSearch': categoriesSearch.map((x) => x.toJson()).toList(),
     };
   }
 
@@ -62,6 +67,11 @@ class FetchCategorySuccess extends FetchCategoryState {
       isLoadingMore: map['isLoadingMore'] as bool,
       hasError: map['hasError'] as bool,
       categories: List<CategoryModel>.from(
+        (map['categories']).map<CategoryModel>(
+          (x) => CategoryModel.fromJson(x as Map<String, dynamic>),
+        ),
+      ),
+      categoriesSearch: List<CategoryModel>.from(
         (map['categories']).map<CategoryModel>(
           (x) => CategoryModel.fromJson(x as Map<String, dynamic>),
         ),
@@ -96,7 +106,7 @@ class FetchCategoryCubit extends Cubit<FetchCategoryState> with HydratedMixin {
 
       DataOutput<CategoryModel> categories = await _categoryRepository.fetchCategories(page: 1);
 
-      emit(FetchCategorySuccess(total: categories.total, categories: categories.modelList, page: 1, hasError: false, isLoadingMore: false));
+      emit(FetchCategorySuccess(total: categories.total, categories: categories.modelList, categoriesSearch: categories.modelList, page: 1, hasError: false, isLoadingMore: false));
     } catch (e) {
       emit(FetchCategoryFailure(e.toString()));
     }
@@ -127,7 +137,13 @@ class FetchCategoryCubit extends Cubit<FetchCategoryState> with HydratedMixin {
         List<String> list = categoryState.categories.map((e) => e.url!).toList();
         await HelperUtils.precacheSVG(list);
 
-        emit(FetchCategorySuccess(isLoadingMore: false, hasError: false, categories: categoryState.categories, page: (state as FetchCategorySuccess).page + 1, total: result.total));
+        emit(FetchCategorySuccess(
+            isLoadingMore: false,
+            hasError: false,
+            categories: categoryState.categories,
+            categoriesSearch: categoryState.categories,
+            page: (state as FetchCategorySuccess).page + 1,
+            total: result.total));
       }
     } catch (e) {
       emit((state as FetchCategorySuccess).copyWith(isLoadingMore: false, hasError: true));
@@ -139,6 +155,27 @@ class FetchCategoryCubit extends Cubit<FetchCategoryState> with HydratedMixin {
       return (state as FetchCategorySuccess).categories.length < (state as FetchCategorySuccess).total;
     }
     return false;
+  }
+
+  void searchData(String query) {
+    if (query != '') {
+      FetchCategorySuccess categoryState = (state as FetchCategorySuccess);
+      List<CategoryModel> filterCategories = [];
+      filterCategories = categoryState.categoriesSearch.where((category) {
+        // Pencarian pada nama kategori
+        bool matchesCategoryName = (category.name ?? '').toLowerCase().contains(query);
+
+        // Pencarian pada subcategories->name
+        bool matchesSubcategoryName = category.children!.any((subcategory) => subcategory.name!.toLowerCase().contains(query));
+        print("hahaha $matchesSubcategoryName");
+        return matchesCategoryName || matchesSubcategoryName;
+      }).toList();
+      emit((state as FetchCategorySuccess).copyWith(categoriesSearch: filterCategories));
+    } else {
+      FetchCategorySuccess categoryState = (state as FetchCategorySuccess);
+      List<CategoryModel> filterCategories = categoryState.categories;
+      emit((state as FetchCategorySuccess).copyWith(categoriesSearch: filterCategories));
+    }
   }
 
   @override

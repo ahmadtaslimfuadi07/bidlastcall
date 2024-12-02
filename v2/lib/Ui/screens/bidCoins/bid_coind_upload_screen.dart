@@ -33,7 +33,7 @@ class BidCoindUploadScreen extends StatefulWidget {
 class _BidCoindUploadScreenState extends State<BidCoindUploadScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   final PickImage _pickTitleImage = PickImage();
-  String packageId = '1';
+  String packageId = '';
   String titleImageURL = "";
   TextEditingController accountNameCtrl = TextEditingController();
   TextEditingController accountNumberCtrl = TextEditingController();
@@ -96,37 +96,43 @@ class _BidCoindUploadScreenState extends State<BidCoindUploadScreen> {
                                 ],
                               ),
                             ),
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              padding: EdgeInsets.fromLTRB(8, 0, 8, 0),
-                              margin: EdgeInsets.fromLTRB(0, 8, 0, 9),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: context.color.secondaryColor,
-                                border: Border.all(
-                                  color: context.color.textDefaultColor.withOpacity(0.2),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: DropdownButtonFormField<String>(
+                                dropdownColor: Colors.white,
+                                icon: const Icon(
+                                  Icons.keyboard_arrow_down,
+                                  color: Color(0xFFE2E4E7),
                                 ),
-                              ),
-                              child: DropdownButton<String>(
-                                value: packageId,
-                                elevation: 16,
-                                icon: const SizedBox.shrink(),
-                                style: TextStyle(fontSize: context.font.large, color: context.color.textDefaultColor),
-                                underline: Container(
-                                  height: 0,
-                                  color: Colors.transparent,
+                                value: packageId == '' ? null : packageId,
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  hintText: 'Package Coins',
+                                  alignLabelWithHint: false,
+                                  hintStyle: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500, height: 0),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(color: Color(0xFFE2E4E7), width: 1),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(color: Colors.black, width: 1),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  floatingLabelBehavior: FloatingLabelBehavior.always,
                                 ),
+                                items: state.bidCoinsPackageModel.map((item) {
+                                  return DropdownMenuItem<String>(
+                                    value: item.id.toString(),
+                                    child: Text("${item.bidcoin} Coins"),
+                                  );
+                                }).toList(),
                                 onChanged: (String? value) {
                                   setState(() {
                                     packageId = value ?? '';
                                   });
                                 },
-                                items: state.bidCoinsPackageModel.map<DropdownMenuItem<String>>((value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value.id.toString(),
-                                    child: Text("${value.bidcoin} Coins"),
-                                  );
-                                }).toList(),
                               ),
                             ),
                           ],

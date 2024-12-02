@@ -22,6 +22,7 @@ import 'package:eClassify/Ui/screens/Subscription/waiting_payment_screen.dart';
 import 'package:eClassify/Ui/screens/ad_details_screen.dart';
 import 'package:eClassify/Ui/screens/bidCoins/bid_coind_upload_screen.dart';
 import 'package:eClassify/Ui/screens/bidCoins/bid_coins_add_screen.dart';
+import 'package:eClassify/Ui/screens/bidCoins/bid_info_categories.dart';
 import 'package:eClassify/Ui/screens/bidCoins/widget/success_bid_coins_screen.dart';
 import 'package:eClassify/Ui/screens/location_permission_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -137,6 +138,7 @@ class Routes {
   static const transactionDetail = '/transactionDetail';
   static const transactionUpload = '/transactionUpload';
   static const waitingPayment = '/waitingPayment';
+  static const bidInfoCategories = '/bidInfoCategories';
 
   // static const myItemsScreen = '/myItemsScreen';
 
@@ -305,6 +307,8 @@ class Routes {
         return TransactionHistoryBidDetailScreen.route(routeSettings);
       case waitingPayment:
         return WaitingPaymentScreen.route(routeSettings);
+      case bidInfoCategories:
+        return BidInfoCategories.route(routeSettings);
 
       /*  case myItemsScreen:
         return ItemsScreen.route(routeSettings);*/

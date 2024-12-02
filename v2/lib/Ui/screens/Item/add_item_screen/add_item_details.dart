@@ -450,18 +450,18 @@ class _AddItemDetailsState extends CloudState<AddItemDetails> {
                       SizedBox(
                         height: 15.rh(context),
                       ),
-                      Text("${"adSlug".translate(context)}\t(${"englishOnlyLbl".translate(context)})"),
-                      SizedBox(
-                        height: 10.rh(context),
-                      ),
-                      CustomTextFormField(
-                        controller: adSlugController,
-                        // controller: _itemNameController,
-                        validator: CustomTextFieldValidator.slug,
-                        action: TextInputAction.next,
-                        hintText: "adSlugHere".translate(context),
-                        hintTextStyle: TextStyle(color: context.color.textDefaultColor.withOpacity(0.5), fontSize: context.font.large),
-                      ),
+                      // Text("${"adSlug".translate(context)}\t(${"englishOnlyLbl".translate(context)})"),
+                      // SizedBox(
+                      //   height: 10.rh(context),
+                      // ),
+                      // CustomTextFormField(
+                      //   controller: adSlugController,
+                      //   // controller: _itemNameController,
+                      //   validator: CustomTextFieldValidator.slug,
+                      //   action: TextInputAction.next,
+                      //   hintText: "adSlugHere".translate(context),
+                      //   hintTextStyle: TextStyle(color: context.color.textDefaultColor.withOpacity(0.5), fontSize: context.font.large),
+                      // ),
                       SizedBox(
                         height: 10.rh(context),
                       ),
@@ -480,7 +480,7 @@ class _AddItemDetailsState extends CloudState<AddItemDetails> {
                       SizedBox(
                         height: 15.rh(context),
                       ),
-                      Text("${"Weight (Kg)".translate(context)}"),
+                      Text("${"Weight (gram)".translate(context)}"),
                       SizedBox(
                         height: 10.rh(context),
                       ),
@@ -489,7 +489,7 @@ class _AddItemDetailsState extends CloudState<AddItemDetails> {
                         // controller: _itemNameController,
                         validator: CustomTextFieldValidator.slug,
                         action: TextInputAction.next,
-                        hintText: "weight".translate(context),
+                        hintText: "gram".translate(context),
                         keyboard: TextInputType.number,
                         hintTextStyle: TextStyle(color: context.color.textDefaultColor.withOpacity(0.5), fontSize: context.font.large),
                       ),

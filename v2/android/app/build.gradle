@@ -29,7 +29,8 @@ if (flutterVersionName == null) {
 android {
     namespace = "com.lastcall.apps"
     // namespace = "com.lastcall.bid"
-    compileSdk = flutter.compileSdkVersion
+    // compileSdk = flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

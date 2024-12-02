@@ -411,27 +411,46 @@ class _SelectNestedCategoryState extends CloudState<SelectNestedCategory> {
                                     ),
                                     color: context.color.secondaryColor,
                                   ),
-                                  height: 56,
                                   alignment: AlignmentDirectional.centerStart,
                                   width: double.infinity,
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 14,
-                                    ),
+                                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                                     child: Row(
                                       children: [
                                         Expanded(
-                                          child: Text(category.name!).color(context.color.textColorDark).firstUpperCaseWidget().bold(weight: FontWeight.w600),
-                                        ),
-                                        Container(
-                                          width: 32,
-                                          height: 32,
-                                          decoration: BoxDecoration(color: context.color.primaryColor, borderRadius: BorderRadius.circular(10)),
-                                          child: Icon(
-                                            Icons.arrow_forward_ios_sharp,
-                                            color: context.color.textColorDark,
-                                            size: 12,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(category.name!).color(context.color.textColorDark).firstUpperCaseWidget().bold(weight: FontWeight.w600),
+                                              // Row(
+                                              //   children: [
+                                              //     // UiUtils.getSvg(AppIcons.bidCoin, height: 15),
+                                              //     // SizedBox(
+                                              //     //   width: 6,
+                                              //     // ),
+                                              //     Text("${UiUtils().numberFormat(amount: category.cost)} bid coins").size(context.font.normal).setMaxLines(lines: 2).color(territoryColor_)
+                                              //   ],
+                                              // ),
+                                            ],
                                           ),
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text("${UiUtils().numberFormat(amount: category.cost)}").size(context.font.normal).setMaxLines(lines: 2).color(territoryColor_),
+                                            SizedBox(
+                                              width: 6,
+                                            ),
+                                            Container(
+                                              width: 32,
+                                              height: 32,
+                                              decoration: BoxDecoration(color: context.color.primaryColor, borderRadius: BorderRadius.circular(10)),
+                                              child: Icon(
+                                                Icons.arrow_forward_ios_sharp,
+                                                color: context.color.textColorDark,
+                                                size: 12,
+                                              ),
+                                            ),
+                                          ],
                                         )
                                       ],
                                     ),

@@ -2,10 +2,12 @@
 import 'dart:async';
 
 //import 'package:app_links/app_links.dart';
+import 'package:eClassify/Ui/screens/AdBannderScreen.dart';
 import 'package:eClassify/Ui/screens/Home/Widgets/grid_list_adapter.dart';
 import 'package:eClassify/data/cubits/Home/fetch_home_all_items_cubit.dart';
 import 'package:eClassify/data/cubits/Home/fetch_home_screen_cubit.dart';
 import 'package:eClassify/data/cubits/favorite/favoriteCubit.dart';
+import 'package:eClassify/data/model/Home/home_screen_section.dart';
 
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -170,31 +172,31 @@ class HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin, A
                           const HomeSearchField(),
                           const SliderWidget(),
                           const CategoryWidgetHome(),
-                          // ...List.generate(state.sections.length, (index) {
-                          //   HomeScreenSection section = state.sections[index];
-                          //   if (state.sections.isNotEmpty) {
-                          //     return HomeSectionsAdapter(
-                          //       section: section,
-                          //     );
-                          //   } else {
-                          //     return SizedBox.shrink();
-                          //   }
-                          // }),
-                          // if (state.sections.isNotEmpty && Constant.isGoogleBannerAdsEnabled == "1") ...[
-                          //   Container(
-                          //     decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: context.color.secondaryColor),
-                          //     height: 85,
-                          //     margin: EdgeInsets.symmetric(horizontal: sidePadding, vertical: 10),
+                          ...List.generate(state.sections.length, (index) {
+                            HomeScreenSection section = state.sections[index];
+                            if (state.sections.isNotEmpty) {
+                              return HomeSectionsAdapter(
+                                section: section,
+                              );
+                            } else {
+                              return SizedBox.shrink();
+                            }
+                          }),
+                          if (state.sections.isNotEmpty && Constant.isGoogleBannerAdsEnabled == "1") ...[
+                            Container(
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: context.color.secondaryColor),
+                              height: 85,
+                              margin: EdgeInsets.symmetric(horizontal: sidePadding, vertical: 10),
 
-                          //     // Height of the banner ad container
-                          //     alignment: AlignmentDirectional.center,
-                          //     child: AdBannerWidget(), // Custom widget for banner ad
-                          //   )
-                          // ] else ...[
-                          //   SizedBox(
-                          //     height: 10,
-                          //   )
-                          // ],
+                              // Height of the banner ad container
+                              alignment: AlignmentDirectional.center,
+                              child: AdBannerWidget(), // Custom widget for banner ad
+                            )
+                          ] else ...[
+                            SizedBox(
+                              height: 10,
+                            )
+                          ],
                         ],
                       );
                     }

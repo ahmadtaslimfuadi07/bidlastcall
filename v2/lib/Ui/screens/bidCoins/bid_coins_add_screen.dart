@@ -41,6 +41,17 @@ class _BidCoinsAddScreenState extends State<BidCoinsAddScreen> {
         showBackButton: true,
         // onBackPress: () {},
         title: "Add Bid Coins",
+        actions: [
+          InkWell(
+              onTap: () => Navigator.pushNamed(
+                    context,
+                    Routes.bidInfoCategories,
+                  ),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 12.0),
+                child: Icon(Icons.info_outline),
+              )),
+        ],
       ),
       bottomNavigationBar: Padding(padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), child: bottomButtonWidget()),
       body: BlocConsumer<FetcBidCoinsPackageCubit, FetchBidCoinsPackageCubitState>(

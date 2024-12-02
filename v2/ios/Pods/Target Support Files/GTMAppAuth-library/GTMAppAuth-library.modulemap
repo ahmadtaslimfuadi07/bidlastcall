@@ -1,0 +1,6 @@
+module GTMAppAuth {
+  umbrella header "GTMAppAuth-library-umbrella.h"
+
+  export *
+  module * { export * }
+}
